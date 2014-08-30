@@ -3,6 +3,16 @@ Tornado botocore
 
 This module allows to use botocore with tornado AsyncHTTPClient, so we can write asynchronous code in tornado for interacting with amazon web services.
 
+`http://nanvel.name/weblog/tornado-botocore/ <http://nanvel.name/weblog/tornado-botocore/>`__
+
+Installation
+------------
+
+.. code-block:: bash
+
+    pip install tornado-botocore
+
+
 Example
 -------
 
