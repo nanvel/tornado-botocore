@@ -54,7 +54,7 @@ class Botocore(object):
             self.service.endpoint_prefix, self.operation.name)
         self.session.emit(event, operation=self.operation,
             http_response=response[0], parsed=response[1])
-        callback(response)
+        callback(response[0])
 
     def call(self, callback, **kwargs):
-        self.operation.call(endpoint=self.endpoint, callback=callback)
+        self.operation_call(endpoint=self.endpoint, callback=callback, **kwargs)
