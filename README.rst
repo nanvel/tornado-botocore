@@ -52,7 +52,7 @@ Using tornado-botocore:
         IOLoop.instance().start()
 
 
-Onother example - deactivate sns endpoint:
+Another example - deactivate sns endpoint:
 
 .. code-block:: python
 
