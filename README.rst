@@ -41,8 +41,7 @@ Using tornado-botocore:
 
 
     def on_response(response):
-        http_response, response_data = response
-        print response_data
+        print response
 
 
     if __name__ == '__main__':
@@ -50,6 +49,31 @@ Using tornado-botocore:
             service='ec2', operation='DescribeInstances',
             region_name='us-east-1')
         ec2.call(callback=on_response)
+        IOLoop.instance().start()
+
+
+Onother example - deactivate sns endpoint:
+
+.. code-block:: python
+
+    from tornado import gen
+    from tornado.ioloop import IOLoop
+    from tornado_botocore import Botocore
+
+
+    def on_response(response):
+        print response
+        # {'ResponseMetadata': {'RequestId': '056eb19e-3d2e-53e7-b897-fd176c3bb7f2'}}
+
+
+    if __name__ == '__main__':
+        sns_operation = Botocore(
+            service='sns', operation='SetEndpointAttributes',
+            region_name='us-west-2')
+        sns_operation.call(
+            callback=on_response,
+            endpoint_arn='arn:aws:sns:us-west-2:...',
+            attributes={'Enabled': 'false'})
         IOLoop.instance().start()
 
 
