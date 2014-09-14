@@ -8,6 +8,11 @@ This module allows to use botocore with tornado AsyncHTTPClient, so we can write
 Installation
 ------------
 
+Requirements:
+
+    - `botocore <https://github.com/boto/botocore>`__
+    - `tornado <https://github.com/tornadoweb/tornado>`__
+
 .. code-block:: bash
 
     pip install tornado-botocore
