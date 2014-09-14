@@ -76,6 +76,36 @@ Another example - deactivate sns endpoint:
             attributes={'Enabled': 'false'})
         IOLoop.instance().start()
 
+Send email using ses service and tonado.gen:
+
+.. code-block:: python
+
+    @gen.coroutine
+    def send(self, ...):
+        ses_send_email = Botocore(
+            service='ses', operation='SendEmail',
+            region_name='us-east-1')
+        source = 'example@mail.com'
+        message = {
+            'Subject': {
+                'Data': 'Example subject',
+            },
+            'Body': {
+                'Html': {
+                    'Data': '<html>Example content</html>',
+                },
+                'Text': {
+                    'Data': 'Example content',
+                }
+            }
+        }
+        destination = {
+            'ToAddresses': ['target@mail.com'],
+        }
+        res = yield gen.Task(ses_send_email.call,
+            source=source, message=message, destination=destination)
+        raise gen.Return(res)
+
 
 Contribute
 ----------
