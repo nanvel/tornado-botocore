@@ -59,5 +59,4 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     install_requires=get_requirements(),
-    cmdclass={'bdist_egg': bdist_egg},  # override bdist_egg
 )
