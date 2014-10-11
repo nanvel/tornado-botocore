@@ -1,2 +1,2 @@
-botocore<1
+botocore>=0.65.0,<1
 tornado

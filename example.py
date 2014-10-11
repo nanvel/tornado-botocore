@@ -3,8 +3,8 @@ from tornado_botocore import Botocore
 
 
 def on_response(response):
-    http_response, response_data = response
-    print response_data
+    print response
+    # {u'Reservations': [], 'ResponseMetadata': {'RequestId': 'ad5d87c9-ec3c-4eab-86c4-851332d4c397'}}
 
 
 if __name__ == '__main__':
