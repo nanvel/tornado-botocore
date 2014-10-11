@@ -93,14 +93,14 @@ Send email using ses service and tonado.gen:
         source = 'example@mail.com'
         message = {
             'Subject': {
-                'Data': 'Example subject',
+                'Data': 'Example subject'.decode('utf-8'),
             },
             'Body': {
                 'Html': {
-                    'Data': '<html>Example content</html>',
+                    'Data': '<html>Example content</html>'.decode('utf-8'),
                 },
                 'Text': {
-                    'Data': 'Example content',
+                    'Data': 'Example content'.decode('utf-8'),
                 }
             }
         }
