@@ -11,5 +11,8 @@ if __name__ == '__main__':
     ec2 = Botocore(
         service='ec2', operation='DescribeInstances',
         region_name='us-east-1')
+    # sync
+    print ec2.call()
+    # async
     ec2.call(callback=on_response)
     IOLoop.instance().start()

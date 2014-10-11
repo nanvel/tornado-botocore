@@ -17,3 +17,6 @@
 
 === 0.1.4 ===
 - another attempt to make requirements works properly
+
+=== 0.1.5 ===
+- allow to do synchronous requests

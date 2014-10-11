@@ -57,6 +57,20 @@ Using tornado-botocore:
         IOLoop.instance().start()
 
 
+If callback was not specified, it works synchronously:
+
+.. code-block:: python
+
+    from tornado_botocore import Botocore
+
+
+    if __name__ == '__main__':
+        ec2 = Botocore(
+            service='ec2', operation='DescribeInstances',
+            region_name='us-east-1')
+        print ec2.call()
+
+
 Another example - deactivate sns endpoint:
 
 .. code-block:: python

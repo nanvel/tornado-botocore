@@ -3,5 +3,6 @@ include LICENSE
 include DESCRIPTION
 include CHANGELOG.txt
 include README.rst
+include requirements.txt
 graft tornado_botocore
 global-exclude *.pyc

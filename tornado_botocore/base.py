@@ -3,7 +3,7 @@ import botocore.response
 import botocore.parsers
 
 from functools import partial
-from tornado.httpclient import AsyncHTTPClient, HTTPRequest
+from tornado.httpclient import HTTPClient, AsyncHTTPClient, HTTPRequest
 
 
 class Botocore(object):
@@ -33,8 +33,13 @@ class Botocore(object):
         request = HTTPRequest(
             url=request.url, headers=request.headers,
             method=request.method, body=request.body)
-        self.http_client.fetch(request, partial(
-            self.prepare_response, callback=callback))
+        if callback:
+            self.http_client.fetch(request, partial(
+                self.prepare_response, callback=callback))
+        else:
+            # sometimes we need to use it synchronously
+            raw_response = HTTPClient().fetch(request)
+            return self.prepare_response(raw_response)
 
     def make_request(self, operation_model, request_dict):
         do_auth = self.endpoint._signature_version and self.endpoint.auth
@@ -46,7 +51,7 @@ class Botocore(object):
         prepared_request = self.endpoint.prepare_request(request, signer)
         return prepared_request
 
-    def prepare_response(self, http_response, callback):
+    def prepare_response(self, http_response, callback=None):
         operation_model = self.operation.model
         protocol = operation_model.metadata['protocol']
         response_dict = {
@@ -67,7 +72,10 @@ class Botocore(object):
             self.service.endpoint_prefix, self.operation.name)
         self.session.emit(event, operation=self.operation,
             http_response=http_response, parsed=parsed)
-        callback(parsed)
+        if callback:
+            callback(parsed)
+        else:
+            return parsed
 
-    def call(self, callback, **kwargs):
-        self.operation_call(endpoint=self.endpoint, callback=callback, **kwargs)
+    def call(self, callback=None, **kwargs):
+        return self.operation_call(endpoint=self.endpoint, callback=callback, **kwargs)
