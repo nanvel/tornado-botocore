@@ -10,7 +10,7 @@ Installation
 
 Requirements:
 
-    - `botocore <https://github.com/boto/botocore>`__
+    - `botocore <https://github.com/boto/botocore>`__ (use v0.60.0 with tornado-botocore==0.0.3 and v0.65.0 with tornado-botocore>=0.1.0)
     - `tornado <https://github.com/tornadoweb/tornado>`__
 
 .. code-block:: bash
