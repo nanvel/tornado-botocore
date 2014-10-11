@@ -56,6 +56,7 @@ setup(
     author_email='polyenoom@gmail.com',
     url="https://github.com/nanvel/tornado-botocore",
     packages=find_packages(),
+    package_data={'': ['requirements.txt']},
     include_package_data=True,
     install_requires=REQUIREMETS,
 )

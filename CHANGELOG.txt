@@ -15,5 +15,5 @@
 === 0.1.1 ===
 - fixed requirements installation
 
-=== 0.1.3 ===
+=== 0.1.4 ===
 - another attempt to make requirements works properly
