@@ -8,13 +8,14 @@ from tornado.httpclient import AsyncHTTPClient, HTTPRequest
 
 class Botocore(object):
 
-    def __init__(self, service, operation, region_name, session=None):
+    def __init__(self, service, operation, region_name, endpoint_url=None, session=None):
         self.session = session or botocore.session.get_session()
         self.service = self.session.get_service(service)
         self.operation = self.service.get_operation(operation)
         self.http_client = AsyncHTTPClient()
         self.operation.call = self.operation_call
-        self.endpoint = self.service.get_endpoint(region_name)
+        self.endpoint = self.service.get_endpoint(
+            region_name=region_name, endpoint_url=endpoint_url)
         self.endpoint.make_request = self.make_request
 
     def operation_call(self, endpoint, callback, **kwargs):
