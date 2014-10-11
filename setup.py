@@ -21,7 +21,7 @@ If all looks good, you can make your first release:
     python setup.py sdist upload
 
 For new releases, you need to bump the version number in
-nicedit/__init__.py and re-run the above command.
+tornado_botocore/__init__.py and re-run the above command.
 
 For more information on creating source distributions, see
 http://docs.python.org/2/distutils/sourcedist.html
@@ -31,19 +31,19 @@ import os
 import tornado_botocore as app
 
 from setuptools import setup, find_packages
-from setuptools.command.bdist_egg import bdist_egg as _bdist_egg
 
-
-class bdist_egg(_bdist_egg):
-    def run(self):
-        call(["pip install -r requirements.txt --no-clean"], shell=True)
-        _bdist_egg.run(self)
 
 def read(fname):
     try:
         return open(os.path.join(os.path.dirname(__file__), fname)).read()
     except IOError:
         return ''
+
+def get_requirements(requirements_file='requirements.txt'):
+    return [
+        i.strip() for i in open(requirements_file).readlines() if i.find('#') != 0
+    ]
+
 
 setup(
     name="tornado-botocore",
@@ -58,9 +58,6 @@ setup(
     url="https://github.com/nanvel/tornado-botocore",
     packages=find_packages(),
     include_package_data=True,
-    install_requires=[
-        'botocore',
-        'tornado',
-    ],
+    install_requires=get_requirements(),
     cmdclass={'bdist_egg': bdist_egg},  # override bdist_egg
 )
