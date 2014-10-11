@@ -30,6 +30,7 @@ http://docs.python.org/2/distutils/sourcedist.html
 import os
 import tornado_botocore as app
 
+from pip.req import parse_requirements
 from setuptools import setup, find_packages
 
 
@@ -39,10 +40,8 @@ def read(fname):
     except IOError:
         return ''
 
-def get_requirements(requirements_file='requirements.txt'):
-    return [
-        i.strip() for i in open(requirements_file).readlines() if i.find('#') != 0
-    ]
+
+REQUIREMETS = [str(r.req) for r in parse_requirements('requirements.txt')]
 
 
 setup(
@@ -57,7 +56,6 @@ setup(
     author_email='polyenoom@gmail.com',
     url="https://github.com/nanvel/tornado-botocore",
     packages=find_packages(),
-    package_data={'': ['requirements.txt']},
     include_package_data=True,
-    install_requires=get_requirements(),
+    install_requires=REQUIREMETS,
 )
