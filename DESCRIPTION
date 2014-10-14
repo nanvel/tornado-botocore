@@ -1,1 +1,1 @@
-Use tornado AsyncHTTPClient inside botocore.
+Use tornado's AsyncHTTPClient inside botocore.

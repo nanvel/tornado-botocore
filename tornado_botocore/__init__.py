@@ -5,4 +5,4 @@ __version__ = '0.1.5'
 try:
     from .base import Botocore
 except ImportError:
-    logging.warning('Looks like some requirements are missed.')
+    logging.warning('It looks like some requirements are missing.')
