@@ -1,7 +1,7 @@
 Tornado botocore
 ================
 
-This module allows to use botocore with tornado AsyncHTTPClient, so we can write asynchronous code in tornado for interacting with amazon web services.
+This module lets you use botocore with tornado's AsyncHTTPClient, so you can write asynchronous code in tornado for interacting with Amazon Web Services.
 
 `http://nanvel.name/weblog/tornado-botocore/ <http://nanvel.name/weblog/tornado-botocore/>`__
 
@@ -57,7 +57,7 @@ Using tornado-botocore:
         IOLoop.instance().start()
 
 
-If callback was not specified, it works synchronously:
+If a callback is not specified, it works synchronously:
 
 .. code-block:: python
 
@@ -71,7 +71,7 @@ If callback was not specified, it works synchronously:
         print ec2.call()
 
 
-Another example - deactivate sns endpoint:
+Another example - deactivate SNS endpoint:
 
 .. code-block:: python
 
@@ -95,7 +95,7 @@ Another example - deactivate sns endpoint:
             attributes={'Enabled': 'false'})
         IOLoop.instance().start()
 
-Send email using ses service and tonado.gen:
+Send email using SES service and tonado.gen:
 
 .. code-block:: python
 
@@ -129,7 +129,7 @@ Send email using ses service and tonado.gen:
 Contribute
 ----------
 
-If you want to contribute to this project, please perform the following steps
+If you want to contribute to this project, please perform the following steps:
 
 .. code-block:: bash
 
