@@ -29,6 +29,7 @@ http://docs.python.org/2/distutils/sourcedist.html
 """
 import os
 import tornado_botocore as app
+import uuid
 
 from pip.req import parse_requirements
 from setuptools import setup, find_packages
@@ -41,7 +42,7 @@ def read(fname):
         return ''
 
 
-REQUIREMETS = [str(r.req) for r in parse_requirements('requirements.txt')]
+REQUIREMETS = [str(r.req) for r in parse_requirements('requirements.txt', session=uuid.uuid1())]
 
 
 setup(

@@ -20,3 +20,6 @@
 
 === 0.1.5 ===
 - allow to do synchronous requests
+
+=== 0.1.6 ===
+- update requirements for pip 6.0+, thx to @buckheroux
