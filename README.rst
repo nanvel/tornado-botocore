@@ -3,6 +3,8 @@ Tornado botocore
 
 This module lets you use botocore with tornado's AsyncHTTPClient, so you can write asynchronous code in tornado for interacting with Amazon Web Services.
 
+For async file upload to S3 see: https://gist.github.com/nanvel/c489761a11ec2db184c5
+
 See also: https://github.com/qudos-com/botocore-tornado
 
 Installation
