@@ -36,11 +36,11 @@ A Simple EC2 Example from `botocore docs <http://botocore.readthedocs.org/en/lat
 
     if __name__ == '__main__':
         session = botocore.session.get_session()
-        ec2 = session.get_service('ec2')
-        operation = ec2.get_operation('DescribeInstances')
-        endpoint = ec2.get_endpoint('us-east-1')
-        http_response, response_data = operation.call(endpoint)
-        print response_data
+        client = session.create_client('ec2', region_name='us-west-2')
+
+        for reservation in client.describe_instances()['Reservations']:
+            for instance in reservation['Instances']:
+                print instance['InstanceId']
 
 
 Using tornado-botocore:
@@ -52,7 +52,9 @@ Using tornado-botocore:
 
 
     def on_response(response):
-        print response
+        for reservation in response['Reservations']:
+            for instance in reservation['Instances']:
+                print instance['InstanceId']
 
 
     if __name__ == '__main__':
