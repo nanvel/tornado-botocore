@@ -1,59 +1,65 @@
-import botocore.session
-import botocore.response
-import botocore.parsers
+import logging
 
 from functools import partial
-from tornado.httpclient import HTTPClient, AsyncHTTPClient, HTTPRequest
+
+import botocore.credentials
+import botocore.parsers
+import botocore.response
+import botocore.session
+
+from tornado.httpclient import HTTPClient, AsyncHTTPClient, HTTPRequest, HTTPError
+
+
+logger = logging.getLogger(__name__)
+
+
+__all__ = ['Botocore']
 
 
 class Botocore(object):
 
     def __init__(self, service, operation, region_name, endpoint_url=None, session=None):
-        self.session = session or botocore.session.get_session()
-        self.service = self.session.get_service(service)
-        self.operation = self.service.get_operation(operation)
+        # set credentials manually
+        session = session or botocore.session.get_session()
+        # get_session accepts access_key, secret_key
+        self.client = session.create_client(
+            service, region_name=region_name, endpoint_url=endpoint_url)
+        self.endpoint = self.client._endpoint
+        self.operation = operation
         self.http_client = AsyncHTTPClient()
-        self.operation.call = self.operation_call
-        self.endpoint = self.service.get_endpoint(
-            region_name=region_name, endpoint_url=endpoint_url)
-        self.endpoint.make_request = self.make_request
 
-    def operation_call(self, endpoint, callback, **kwargs):
-        event = self.session.create_event('before-parameter-build',
-            self.service.endpoint_prefix, self.operation.name)
-        self.session.emit(event,
-            operation=self.operation, endpoint=endpoint, params=kwargs)
-        request_dict = self.operation.build_parameters(**kwargs)
-        event = self.session.create_event('before-call',
-            self.service.endpoint_prefix, self.operation.name)
-        self.session.emit(event,
-            operation=self.operation, endpoint=endpoint, params=request_dict)
-        request = endpoint.make_request(
-            operation_model=self.operation.model, request_dict=request_dict)
+    def _send_request(self, request_dict, operation_model, callback=None):
+        request = self.endpoint.create_request(request_dict, operation_model)
+        adapter = self.endpoint.http_session.get_adapter(url=request.url)
+        conn = adapter.get_connection(request.url, proxies=None)
+        adapter.cert_verify(conn, request.url, verify=True, cert=None)
+        adapter.add_headers(request)
         request = HTTPRequest(
             url=request.url, headers=request.headers,
-            method=request.method, body=request.body)
-        if callback:
-            self.http_client.fetch(request, partial(
-                self.prepare_response, callback=callback))
-        else:
-            # sometimes we need to use it synchronously
-            raw_response = HTTPClient().fetch(request)
-            return self.prepare_response(raw_response)
+            method=request.method, body=request.body,
+            validate_cert=False)
+        if callback is None:
+            # sync
+            return self._process_response(HTTPClient().fetch(request), operation_model=operation_model)
+        # async
+        self.http_client.fetch(
+            request,
+            callback=partial(self._process_response, callback=callback, operation_model=operation_model))
 
-    def make_request(self, operation_model, request_dict):
-        do_auth = self.endpoint._signature_version and self.endpoint.auth
-        if do_auth:
-            signer = self.endpoint.auth
-        else:
-            signer = None
-        request = self.endpoint._create_request_object(request_dict)
-        prepared_request = self.endpoint.prepare_request(request, signer)
-        return prepared_request
+    def _make_request(self, operation_model, request_dict, callback):
+        logger.debug(
+            "Making request for %s (verify_ssl=%s) with params: %s",
+            operation_model, self.endpoint.verify, request_dict)
+        return self._send_request(
+            request_dict=request_dict, operation_model=operation_model, callback=callback)
 
-    def prepare_response(self, http_response, callback=None):
-        operation_model = self.operation.model
-        protocol = operation_model.metadata['protocol']
+    def _make_api_call(self, operation_name, api_params, callback=None):
+        operation_model = self.client._service_model.operation_model(operation_name)
+        request_dict = self.client._convert_to_request_dict(api_params, operation_model)
+        return self._make_request(
+            operation_model=operation_model, request_dict=request_dict, callback=callback)
+
+    def _process_response(self, http_response, operation_model, callback=None):
         response_dict = {
             'headers': http_response.headers,
             'status_code': http_response.code,
@@ -62,20 +68,30 @@ class Botocore(object):
             response_dict['body'] = http_response.body
         elif operation_model.has_streaming_output:
             response_dict['body'] = botocore.response.StreamingBody(
-                http_response.body, response_dict['headers'].get('content-length'))
+                http_response.raw, response_dict['headers'].get('content-length'))
         else:
             response_dict['body'] = http_response.body
-        parser = botocore.parsers.create_parser(protocol)
-        parsed = parser.parse(
-            response_dict, operation_model.output_shape)
-        event = self.session.create_event('after-call',
-            self.service.endpoint_prefix, self.operation.name)
-        self.session.emit(event, operation=self.operation,
-            http_response=http_response, parsed=parsed)
+        parser = self.endpoint._response_parser_factory.create_parser(operation_model.metadata['protocol'])
+        parsed = parser.parse(response_dict, operation_model.output_shape)
+
+        self.client.meta.events.emit(
+            "after-call.{endpoint_prefix}.{operation_name}".format(
+                endpoint_prefix=self.client._service_model.endpoint_prefix,
+                operation_name=self.operation),
+            http_response=response_dict, parsed=parsed,
+            model=operation_model
+        )
+
+        if http_response.error and isinstance(http_response.error, HTTPError):
+            if 'Error' not in parsed:
+                parsed['Error'] = {
+                    'Message': http_response.error.message,
+                    'Code': unicode(http_response.error.code)
+                }
         if callback:
             callback(parsed)
         else:
             return parsed
 
     def call(self, callback=None, **kwargs):
-        return self.operation_call(endpoint=self.endpoint, callback=callback, **kwargs)
+        return self._make_api_call(operation_name=self.operation, api_params=kwargs, callback=callback)
