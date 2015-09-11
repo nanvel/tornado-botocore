@@ -27,3 +27,6 @@
 === 1.0.0 ===
 - support latest botocore v 1.2.0
 - use semantic versioning
+
+=== 1.0.1 ===
+- minor fix in docs

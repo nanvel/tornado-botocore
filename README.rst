@@ -11,8 +11,8 @@ Installation
 ------------
 
 Requirements:
-    - `botocore <https://github.com/boto/botocore>`__
-    - `tornado <https://github.com/tornadoweb/tornado>`__ (v1.2.0)
+    - `botocore <https://github.com/boto/botocore>`__ (v1.2.0)
+    - `tornado <https://github.com/tornadoweb/tornado>`__
 
 Versions:
     - v0.60.0 uses tornado-botocore==0.0.3
