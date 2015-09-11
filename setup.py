@@ -28,6 +28,7 @@ http://docs.python.org/2/distutils/sourcedist.html
 
 """
 import os
+import uuid
 import tornado_botocore as app
 import uuid
 
