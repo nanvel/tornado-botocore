@@ -99,8 +99,8 @@ Another example - deactivate SNS endpoint:
             region_name='us-west-2')
         sns_operation.call(
             callback=on_response,
-            endpoint_arn='arn:aws:sns:us-west-2:...',
-            attributes={'Enabled': 'false'})
+            Endpoint='arn:aws:sns:us-west-2:...',
+            Attributes={'Enabled': 'false'})
         IOLoop.instance().start()
 
 Send email using SES service and tonado.gen:
@@ -130,7 +130,7 @@ Send email using SES service and tonado.gen:
             'ToAddresses': ['target@mail.com'],
         }
         res = yield gen.Task(ses_send_email.call,
-            source=source, message=message, destination=destination)
+            Source=source, Message=message, Destination=destination)
         raise gen.Return(res)
 
 
