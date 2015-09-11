@@ -133,6 +133,14 @@ Send email using SES service and tonado.gen:
             Source=source, Message=message, Destination=destination)
         raise gen.Return(res)
 
+Usage
+-----
+
+Session: I think it makes sense to keep one global session object instead of create one for every request.
+
+Credentials: You can specify credentials once on session object creation (pass to get_session method).
+
+Testing: endpoint_url argument is useful for testing (use DynamoDBLocal).
 
 Contribute
 ----------
