@@ -15,9 +15,9 @@ Requirements:
     - `tornado <https://github.com/tornadoweb/tornado>`__
 
 Versions:
-    - v0.60.0 uses tornado-botocore==0.0.3
-    - v0.65.0 uses tornado-botocore>=0.1.0
-    - v1.0.0 uses tornado-botocore==1.2.0
+    - tornado-botocore==0.0.3 (botocore==0.60.0)
+    - tornado-botocore==0.1.0 (botocore==0.65.0)
+    - tornado-botocore==1.0.0 (botocore==1.2.0)
 
 .. code-block:: bash
 
