@@ -30,3 +30,8 @@
 
 === 1.0.1 ===
 - minor fix in docs
+
+=== 1.0.2 ===
+- fixed http_response.raw -> http_response.buffer for streaming body
+- updated docs
+- updated authors

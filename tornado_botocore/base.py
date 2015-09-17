@@ -68,7 +68,7 @@ class Botocore(object):
             response_dict['body'] = http_response.body
         elif operation_model.has_streaming_output:
             response_dict['body'] = botocore.response.StreamingBody(
-                http_response.body, response_dict['headers'].get('content-length'))
+                http_response.buffer, response_dict['headers'].get('content-length'))
         else:
             response_dict['body'] = http_response.body
         parser = self.endpoint._response_parser_factory.create_parser(operation_model.metadata['protocol'])
