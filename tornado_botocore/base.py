@@ -27,6 +27,8 @@ class Botocore(object):
             service, region_name=region_name, endpoint_url=endpoint_url)
         self.endpoint = self.client._endpoint
         self.operation = operation
+        # Tornado proxies are currently only supported with curl_httpclient
+        # http://www.tornadoweb.org/en/stable/httpclient.html#request-objects
         AsyncHTTPClient.configure("tornado.curl_httpclient.CurlAsyncHTTPClient")
         self.http_client = AsyncHTTPClient()
 
