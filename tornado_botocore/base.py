@@ -36,7 +36,7 @@ class Botocore(object):
         conn = adapter.get_connection(request.url, proxies=None)
         adapter.cert_verify(conn, request.url, verify=True, cert=None)
         adapter.add_headers(request)
-        httpsProxy = get_environ_proxies("www.google.fr").get("https")
+        httpsProxy = get_environ_proxies(request.url).get("https")
         proxyHost = None
         proxyPort = None
         if httpsProxy:
