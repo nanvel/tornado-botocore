@@ -8,7 +8,8 @@ import botocore.response
 import botocore.session
 
 from tornado.httpclient import HTTPClient, AsyncHTTPClient, HTTPRequest, HTTPError
-
+from requests.utils import get_environ_proxies
+from urlparse import urlparse
 
 logger = logging.getLogger(__name__)
 
@@ -26,6 +27,9 @@ class Botocore(object):
             service, region_name=region_name, endpoint_url=endpoint_url)
         self.endpoint = self.client._endpoint
         self.operation = operation
+        # Tornado proxies are currently only supported with curl_httpclient
+        # http://www.tornadoweb.org/en/stable/httpclient.html#request-objects
+        AsyncHTTPClient.configure("tornado.curl_httpclient.CurlAsyncHTTPClient")
         self.http_client = AsyncHTTPClient()
 
     def _send_request(self, request_dict, operation_model, callback=None):
@@ -34,10 +38,17 @@ class Botocore(object):
         conn = adapter.get_connection(request.url, proxies=None)
         adapter.cert_verify(conn, request.url, verify=True, cert=None)
         adapter.add_headers(request)
+        httpsProxy = get_environ_proxies(request.url).get("https")
+        proxyHost = None
+        proxyPort = None
+        if httpsProxy:
+            proxy = urlparse(httpsProxy)
+            proxyHost = proxy.hostname
+            proxyPort = proxy.port
         request = HTTPRequest(
             url=request.url, headers=request.headers,
             method=request.method, body=request.body,
-            validate_cert=False)
+            validate_cert=False, proxy_host=proxyHost, proxy_port=proxyPort)
         if callback is None:
             # sync
             return self._process_response(HTTPClient().fetch(request), operation_model=operation_model)
