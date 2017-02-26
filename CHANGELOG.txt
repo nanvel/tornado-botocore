@@ -35,3 +35,7 @@
 - fixed http_response.raw -> http_response.buffer for streaming body
 - updated docs
 - updated authors
+
+=== 1.1.0 ===
+- proxy support
+- code cleaning

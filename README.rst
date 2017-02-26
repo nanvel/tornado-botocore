@@ -7,6 +7,8 @@ For async file upload to S3 see: https://gist.github.com/nanvel/c489761a11ec2db1
 
 See also: https://github.com/qudos-com/botocore-tornado
 
+Another option is aiohttp and aiobotocore: https://github.com/aio-libs/aiobotocore
+
 Installation
 ------------
 
