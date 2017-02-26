@@ -61,8 +61,10 @@ Using tornado-botocore:
 
     if __name__ == '__main__':
         ec2 = Botocore(
-            service='ec2', operation='DescribeInstances',
-            region_name='us-east-1')
+            service='ec2',
+            operation='DescribeInstances',
+            region_name='us-east-1'
+        )
         ec2.call(callback=on_response)
         IOLoop.instance().start()
 
@@ -76,8 +78,10 @@ If a callback is not specified, it works synchronously:
 
     if __name__ == '__main__':
         ec2 = Botocore(
-            service='ec2', operation='DescribeInstances',
-            region_name='us-east-1')
+            service='ec2',
+            operation='DescribeInstances',
+            region_name='us-east-1'
+        )
         print ec2.call()
 
 
@@ -97,12 +101,15 @@ Another example - deactivate SNS endpoint:
 
     if __name__ == '__main__':
         sns_operation = Botocore(
-            service='sns', operation='SetEndpointAttributes',
-            region_name='us-west-2')
+            service='sns',
+            operation='SetEndpointAttributes',
+            region_name='us-west-2'
+        )
         sns_operation.call(
             callback=on_response,
             Endpoint='arn:aws:sns:us-west-2:...',
-            Attributes={'Enabled': 'false'})
+            Attributes={'Enabled': 'false'}
+        )
         IOLoop.instance().start()
 
 Send email using SES service and tonado.gen:
@@ -112,8 +119,10 @@ Send email using SES service and tonado.gen:
     @gen.coroutine
     def send(self, ...):
         ses_send_email = Botocore(
-            service='ses', operation='SendEmail',
-            region_name='us-east-1')
+            service='ses',
+            operation='SendEmail',
+            region_name='us-east-1'
+        )
         source = 'example@mail.com'
         message = {
             'Subject': {
