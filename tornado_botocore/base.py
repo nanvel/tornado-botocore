@@ -3,12 +3,12 @@ import logging
 from functools import partial
 
 try:
-    #python2
+    # python2
     from urlparse import urlparse
 except ImportError:
-    #python3
+    # python3
     from urllib.parse import urlparse
-    
+
 from requests.utils import get_environ_proxies
 from tornado.httpclient import HTTPClient, AsyncHTTPClient, HTTPRequest, HTTPError
 

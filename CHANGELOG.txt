@@ -39,3 +39,6 @@
 === 1.1.0 ===
 - proxy support
 - code cleaning
+
+=== 1.1.1 ===
+- urlparse.parse for python3
