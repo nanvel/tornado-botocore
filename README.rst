@@ -13,7 +13,7 @@ Installation
 ------------
 
 Requirements:
-    - `botocore <https://github.com/boto/botocore>`__ (v1.2.0)
+    - `botocore <https://github.com/boto/botocore>`__
     - `tornado <https://github.com/tornadoweb/tornado>`__
 
 Versions:
