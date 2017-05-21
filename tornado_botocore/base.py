@@ -1,15 +1,15 @@
 import logging
 
 from functools import partial
-
 try:
     # python2
     from urlparse import urlparse
+    from urllib import getproxies_environment
 except ImportError:
     # python3
     from urllib.parse import urlparse
+    from urllib.request import getproxies_environment
 
-from requests.utils import get_environ_proxies
 from tornado.httpclient import HTTPClient, AsyncHTTPClient, HTTPRequest, HTTPError
 
 import botocore.credentials
@@ -18,10 +18,10 @@ import botocore.response
 import botocore.session
 
 
-logger = logging.getLogger(__name__)
-
-
 __all__ = ('Botocore',)
+
+
+logger = logging.getLogger(__name__)
 
 
 # Tornado proxies are currently only supported with curl_httpclient
@@ -44,6 +44,19 @@ class Botocore(object):
         self.operation = operation
         self.http_client = AsyncHTTPClient()
 
+        self.proxy_host = None
+        self.proxy_port = None
+        https_proxy = getproxies_environment().get('https')
+        if https_proxy:
+            proxy_parts = https_proxy.split(':')
+            if len(proxy_parts) == 2 and proxy_parts[-1].isdigit():
+                self.proxy_host, self.proxy_port = proxy_parts
+                self.proxy_port = int(self.proxy_port)
+            else:
+                proxy = urlparse(https_proxy)
+                self.proxy_host = proxy.hostname
+                self.proxy_port = proxy.port
+
     def _send_request(self, request_dict, operation_model, callback=None):
         request = self.endpoint.create_request(request_dict, operation_model)
         adapter = self.endpoint.http_session.get_adapter(url=request.url)
@@ -51,27 +64,14 @@ class Botocore(object):
         adapter.cert_verify(conn, request.url, verify=True, cert=None)
         adapter.add_headers(request)
 
-        proxy_host = None
-        proxy_port = None
-        https_proxy = get_environ_proxies(request.url).get('https')
-        if https_proxy:
-            proxy_parts = https_proxy.split(':')
-            if len(proxy_parts) == 2 and proxy_parts[-1].isdigit():
-                proxy_host, proxy_port = proxy_parts
-                proxy_port = int(proxy_port)
-            else:
-                proxy = urlparse(https_proxy)
-                proxy_host = proxy.hostname
-                proxy_port = proxy.port
-
         request = HTTPRequest(
             url=request.url,
             headers=request.headers,
             method=request.method,
             body=request.body,
             validate_cert=False,
-            proxy_host=proxy_host,
-            proxy_port=proxy_port
+            proxy_host=self.proxy_host,
+            proxy_port=self.proxy_port
         )
 
         if callback is None:
