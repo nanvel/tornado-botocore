@@ -43,7 +43,7 @@ A Simple EC2 Example from `botocore docs <http://botocore.readthedocs.org/en/lat
 
         for reservation in client.describe_instances()['Reservations']:
             for instance in reservation['Instances']:
-                print instance['InstanceId']
+                print(instance['InstanceId'])
 
 
 Using tornado-botocore:
@@ -57,7 +57,7 @@ Using tornado-botocore:
     def on_response(response):
         for reservation in response['Reservations']:
             for instance in reservation['Instances']:
-                print instance['InstanceId']
+                print(instance['InstanceId'])
 
 
     if __name__ == '__main__':
@@ -96,7 +96,7 @@ Another example - deactivate SNS endpoint:
 
 
     def on_response(response):
-        print response
+        print(response)
         # {'ResponseMetadata': {'RequestId': '056eb19e-3d2e-53e7-b897-fd176c3bb7f2'}}
 
 
@@ -138,11 +138,13 @@ Send email using SES service and tonado.gen:
                 }
             }
         }
-        destination = {
-            'ToAddresses': ['target@mail.com'],
-        }
-        res = yield gen.Task(ses_send_email.call,
-            Source=source, Message=message, Destination=destination)
+        destination = {'ToAddresses': ['target@mail.com']}
+        res = yield gen.Task(
+            ses_send_email.call,
+            Source=source,
+            Message=message,
+            Destination=destination
+        )
         raise gen.Return(res)
 
 Usage
