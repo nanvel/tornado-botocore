@@ -9,6 +9,52 @@ See also: https://github.com/qudos-com/botocore-tornado
 
 Another option is aiohttp and aiobotocore: https://github.com/aio-libs/aiobotocore
 
+And one another option, http client agnostic:
+```python
+from botocore.endpoint import Endpoint
+import botocore.session
+
+
+class BotocoreRequest(Exception):
+
+    def __init__(self, request, *args, **kwargs):
+        super(BotocoreRequest, self).__init__(*args, **kwargs)
+        self.method = request.method
+        # https://github.com/twisted/treq/issues/185
+        self.url = request.url.replace('https://', 'http://')
+        self.headers = dict(request.headers)
+        self.body = request.body and request.body.read()
+
+
+def _send_request(self, request_dict, operation_model):
+    request = self.create_request(request_dict, operation_model)
+    raise BotocoreRequest(request=request)
+
+
+class MyAWSClient:
+    def __init__(self, service, access_key, secret_key, region, timeout=30):
+        session = botocore.session.get_session()
+        session.set_credentials(
+            access_key=access_key,
+            secret_key=secret_key
+        )
+        self.client = session.create_client(service, region_name=region)
+        endpoint = self.client._endpoint
+        endpoint._send_request = MethodType(_send_request, endpoint)
+        self.timeout = timeout
+
+    def request(self, method, **kwargs):
+        try:
+            getattr(self.client, method)(**kwargs)
+        except BotocoreRequest as e:
+            return MyFavouriteHTTPClient(
+                method=e.method,
+                url=e.url,
+                body=e.body,
+                headers=e.headers
+            )
+```
+
 Installation
 ------------
 
