@@ -13,6 +13,8 @@ And one another option, http client agnostic:
 
 .. code-block:: python
 
+    from types import MethodType
+
     from botocore.endpoint import Endpoint
     import botocore.session
 
