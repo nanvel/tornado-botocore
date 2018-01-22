@@ -53,7 +53,7 @@ setup(
     license='The MIT License',
     platforms=['OS Independent'],
     keywords='tornado, botocore, async boto, amazon, aws',
-    author='Oleksandr Polyeno',
+    author='Oleksandr Polieno',
     author_email='polyenoom@gmail.com',
     url="https://github.com/nanvel/tornado-botocore",
     packages=find_packages(),
