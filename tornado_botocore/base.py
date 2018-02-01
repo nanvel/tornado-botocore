@@ -64,11 +64,13 @@ class Botocore(object):
         adapter.cert_verify(conn, request.url, verify=True, cert=None)
         adapter.add_headers(request)
 
+        req_body = request.body.buf if request.body else None
+
         request = HTTPRequest(
             url=request.url,
             headers=request.headers,
             method=request.method,
-            body=request.body,
+            body=req_body,
             validate_cert=False,
             proxy_host=self.proxy_host,
             proxy_port=self.proxy_port
@@ -103,7 +105,7 @@ class Botocore(object):
 
     def _make_api_call(self, operation_name, api_params, callback=None):
         operation_model = self.client._service_model.operation_model(operation_name)
-        request_dict = self.client._convert_to_request_dict(api_params, operation_model)
+        request_dict = self.client._convert_to_request_dict(api_params, operation_model, {})
         return self._make_request(
             operation_model=operation_model,
             request_dict=request_dict,
