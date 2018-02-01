@@ -35,3 +35,15 @@
 - fixed http_response.raw -> http_response.buffer for streaming body
 - updated docs
 - updated authors
+
+=== 1.1.0 ===
+- proxy support
+- code cleaning
+
+=== 1.1.1 ===
+- urlparse.parse for python3
+
+=== 1.2.0 ===
+- fixed botocore version in requirements
+- removed requests from requirements
+- python3 related fixes
