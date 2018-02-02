@@ -140,7 +140,7 @@ class Botocore(object):
             if 'Error' not in parsed:
                 parsed['Error'] = {
                     'Message': http_response.error.message,
-                    'Code': unicode(http_response.error.code)
+                    'Code': str(http_response.error.code)
                 }
         if callback:
             callback(parsed)
