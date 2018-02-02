@@ -47,3 +47,6 @@
 - fixed botocore version in requirements
 - removed requests from requirements
 - python3 related fixes
+
+=== 1.3.0 ===
+- support latest botocore v 1.8.36
