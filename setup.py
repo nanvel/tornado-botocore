@@ -27,11 +27,10 @@ For more information on creating source distributions, see
 http://docs.python.org/2/distutils/sourcedist.html
 
 """
+import fileinput
 import os
 import tornado_botocore as app
-import uuid
 
-from pip.req import parse_requirements
 from setuptools import setup, find_packages
 
 
@@ -42,7 +41,7 @@ def read(fname):
         return ''
 
 
-REQUIREMENTS = [str(r.req) for r in parse_requirements('requirements.txt', session=uuid.uuid1())]
+REQUIREMENTS = [line for line in fileinput.input(files=['requirements.txt'])]
 
 
 setup(
