@@ -70,7 +70,7 @@ Versions:
     - tornado-botocore==0.1.0 (botocore==0.65.0)
     - tornado-botocore==1.0.0 (botocore==1.2)
     - tornado-botocore==1.2 (botocore>=1.2,<1.6)
-    - tornado-botocore==1.3.0 (botocore 1.8+)
+    - tornado-botocore==1.4.0 (botocore 1.8+)
 
 .. code-block:: bash
 

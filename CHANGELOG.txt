@@ -56,3 +56,6 @@
 
 === 1.3.2 ===
 - setup.py: fix requirements loading
+
+=== 1.4.0 ===
+- connect and request timeouts

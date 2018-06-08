@@ -32,7 +32,7 @@ AsyncHTTPClient.configure("tornado.curl_httpclient.CurlAsyncHTTPClient")
 class Botocore(object):
 
     def __init__(self, service, operation, region_name, endpoint_url=None, session=None,
-                 connect_timeout=20.0, request_timeout=20.0):
+                 connect_timeout=None, request_timeout=None):
 
         # set credentials manually
         session = session or botocore.session.get_session()
