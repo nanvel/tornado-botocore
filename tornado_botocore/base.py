@@ -126,7 +126,7 @@ class Botocore(object):
             'status_code': http_response.code,
         }
         if response_dict['status_code'] >= 300:
-            response_dict['body'] = http_response.body
+            response_dict['body'] = http_response.body or ''
         elif operation_model.has_streaming_output:
             response_dict['body'] = botocore.response.StreamingBody(
                 http_response.buffer,
