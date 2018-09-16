@@ -1,7 +1,7 @@
 Tornado botocore
 ================
 
-**Attention!**: tornado-botocore doesn't for with botocore-1.11.6 (see `Issues <https://github.com/nanvel/tornado-botocore/issues>`__) and, probably, with newer version as well.
+**Attention!**: tornado-botocore doesn't work with botocore-1.11.6 (see `Issues <https://github.com/nanvel/tornado-botocore/issues>`__) and, probably, with newer version as well.
 There are alternatives below.
 
 This module lets you use botocore with tornado's AsyncHTTPClient, so you can write asynchronous code in tornado for interacting with Amazon Web Services.
