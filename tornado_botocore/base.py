@@ -17,7 +17,6 @@ import botocore.parsers
 import botocore.response
 import botocore.session
 
-
 __all__ = ('Botocore',)
 
 
@@ -33,7 +32,6 @@ class Botocore(object):
 
     def __init__(self, service, operation, region_name, endpoint_url=None, session=None,
                  connect_timeout=None, request_timeout=None):
-
         # set credentials manually
         session = session or botocore.session.get_session()
         # get_session accepts access_key, secret_key
@@ -42,7 +40,11 @@ class Botocore(object):
             region_name=region_name,
             endpoint_url=endpoint_url
         )
-        self.endpoint = self.client._endpoint
+        try:
+            self.endpoint = self.client.endpoint
+        except AttributeError as e:
+            self.endpoint = self.client._endpoint
+
         self.operation = operation
         self.http_client = AsyncHTTPClient()
 
@@ -64,12 +66,7 @@ class Botocore(object):
 
     def _send_request(self, request_dict, operation_model, callback=None):
         request = self.endpoint.create_request(request_dict, operation_model)
-        adapter = self.endpoint.http_session.get_adapter(url=request.url)
-        conn = adapter.get_connection(request.url, proxies=None)
-        adapter.cert_verify(conn, request.url, verify=True, cert=None)
-        adapter.add_headers(request)
 
-        # for bytes body pass buf
         req_body = getattr(request.body, 'buf', request.body)
 
         request = HTTPRequest(
@@ -103,8 +100,8 @@ class Botocore(object):
 
     def _make_request(self, operation_model, request_dict, callback):
         logger.debug(
-            "Making request for %s (verify_ssl=%s) with params: %s",
-            operation_model, self.endpoint.verify, request_dict)
+            "Making request for %s with params: %s",
+            operation_model, request_dict)
         return self._send_request(
             request_dict=request_dict,
             operation_model=operation_model,
@@ -112,7 +109,7 @@ class Botocore(object):
         )
 
     def _make_api_call(self, operation_name, api_params, callback=None):
-        operation_model = self.client._service_model.operation_model(operation_name)
+        operation_model = self.client.meta.service_model.operation_model(operation_name)
         request_dict = self.client._convert_to_request_dict(api_params, operation_model, {})
         return self._make_request(
             operation_model=operation_model,
@@ -139,7 +136,7 @@ class Botocore(object):
 
         self.client.meta.events.emit(
             "after-call.{endpoint_prefix}.{operation_name}".format(
-                endpoint_prefix=self.client._service_model.endpoint_prefix,
+                endpoint_prefix=self.client.meta.service_model.endpoint_prefix,
                 operation_name=self.operation
             ),
             http_response=response_dict, parsed=parsed,
