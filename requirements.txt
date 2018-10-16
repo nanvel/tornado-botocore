@@ -1,3 +1,5 @@
 botocore>=1.8
-pycurl>=7.43,<7.44
 tornado
+
+# optional
+# pycurl>=7.43,<7.44

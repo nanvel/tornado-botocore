@@ -23,12 +23,9 @@ __all__ = ('Botocore',)
 logger = logging.getLogger(__name__)
 
 
-# Tornado proxies are currently only supported with curl_httpclient
-# http://www.tornadoweb.org/en/stable/httpclient.html#request-objects
-AsyncHTTPClient.configure("tornado.curl_httpclient.CurlAsyncHTTPClient")
-
-
 class Botocore(object):
+
+    _curl_httpclient_enabled = False
 
     def __init__(self, service, operation, region_name, endpoint_url=None, session=None,
                  connect_timeout=None, request_timeout=None):
@@ -42,7 +39,7 @@ class Botocore(object):
         )
         try:
             self.endpoint = self.client.endpoint
-        except AttributeError as e:
+        except AttributeError:
             self.endpoint = self.client._endpoint
 
         self.operation = operation
@@ -52,6 +49,8 @@ class Botocore(object):
         self.proxy_port = None
         https_proxy = getproxies_environment().get('https')
         if https_proxy:
+            self._enable_curl_httpclient()
+
             proxy_parts = https_proxy.split(':')
             if len(proxy_parts) == 2 and proxy_parts[-1].isdigit():
                 self.proxy_host, self.proxy_port = proxy_parts
@@ -63,6 +62,16 @@ class Botocore(object):
 
         self.request_timeout = request_timeout
         self.connect_timeout = connect_timeout
+
+    @classmethod
+    def _enable_curl_httpclient(cls):
+        """
+        Tornado proxies are currently only supported with curl_httpclient
+        http://www.tornadoweb.org/en/stable/httpclient.html#request-objects
+        """
+        if not cls._curl_httpclient_enabled:
+            AsyncHTTPClient.configure("tornado.curl_httpclient.CurlAsyncHTTPClient")
+            cls._curl_httpclient_enabled = True
 
     def _send_request(self, request_dict, operation_model, callback=None):
         request = self.endpoint.create_request(request_dict, operation_model)

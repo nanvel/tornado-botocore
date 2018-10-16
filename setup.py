@@ -26,6 +26,10 @@ tornado_botocore/__init__.py and re-run the above command.
 For more information on creating source distributions, see
 http://docs.python.org/2/distutils/sourcedist.html
 
+Using twine:
+python setup.py bdist_wheel --universal
+python setup.py sdist
+twine upload dist/*
 """
 import fileinput
 import os

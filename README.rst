@@ -64,6 +64,7 @@ Installation
 Requirements:
     - `botocore <https://github.com/boto/botocore>`__
     - `tornado <https://github.com/tornadoweb/tornado>`__
+    - `pycurl <http://pycurl.io/>`__, optional, required for proxy support
 
 Versions:
     - tornado-botocore==0.0.3 (botocore==0.60.0)
@@ -71,6 +72,7 @@ Versions:
     - tornado-botocore==1.0.0 (botocore==1.2)
     - tornado-botocore==1.2 (botocore>=1.2,<1.6)
     - tornado-botocore==1.4.0 (botocore 1.8+)
+    - tornado-botocore==1.5.0 (botocore 1.12+)
 
 .. code-block:: bash
 
